@@ -3,11 +3,11 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 
 puppeteer.use(StealthPlugin())
 
-async function scrapeFragrantica() {
+async function scrapeFragrantica(url) {
     try {
         const browser = await puppeteer.launch({ headless: true})
         const page = await browser.newPage()
-        await page.goto('https://www.fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-Zebra-Collector-64627.html')
+        await page.goto(url)
 
         // await page.waitForXPath('//*[@id="pyramid"]/div[1]/div/div[2]/div[3]/div/div[1]/div[2]/text()')
 
@@ -43,4 +43,4 @@ async function scrapeFragrantica() {
     }
 }
 
-scrapeFragrantica()
+scrapeFragrantica('https://www.fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-Zebra-Collector-64627.html')
