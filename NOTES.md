@@ -8,4 +8,4 @@
     - For each perfume link : 
       - Extract data and store it in some local data structure (array)
 - Store array in sql at the end of the crawl job
-- If you need 
+- Add .gitignore to ignore node_modules
