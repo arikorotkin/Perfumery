@@ -3,44 +3,34 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 
 puppeteer.use(StealthPlugin())
 
-async function scrapeFragrantica(url) {
+async function scrapeFragranticaPerfumePage(url) {
     try {
         const browser = await puppeteer.launch({ headless: true})
         const page = await browser.newPage()
         await page.goto(url)
 
-        // await page.waitForXPath('//*[@id="pyramid"]/div[1]/div/div[2]/div[3]/div/div[1]/div[2]/text()')
-
-        // const firstTopNote = await page.$x('//*[@id="pyramid"]/div[1]/div/div[2]/div[3]/div/div[1]/div[2]/text()')
-
-        // let nameOfTopNote = await page.evaluate(topNote => topNote.textContent, firstTopNote[0])
-
+        // top notes
         await page.waitForXPath('//*[@id="pyramid"]/div[1]/div/div[2]/div[3]/div')
 
-        const topNoteParent = await page.$$('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(4) > div')
+        const topNoteChildren = await page.$$eval('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(4) > div > div', arrOfChildren => {
+            return arrOfChildren.map(child => child.textContent)
+        })
 
-        console.log(`The length of the parent is ${topNoteParent.length}.`)
-
-        const topNotes = []
-
-        for (let i = 0; i < topNoteParent.length; i++) {
-            const currentTopNote = await topNoteParent[i].$eval('div:nth-child(2)', el => el.textContent)
-            topNotes.push(currentTopNote)
-        }
-
-        console.log(`The number of top notes is ${topNotes.length}.`)
-
-        const printableTopNotes = topNotes.reduce((accum, currVal) => {
-            if (!accum) {
-                return currVal
+        console.log(`The number of top notes are ${topNoteChildren.reduce((accum, cur, ind, arr) => {
+            if (ind === arr.length - 1) {
+                return accum + 'and ' + cur
             }
-            return accum + ', ' + currVal
-        }, '')
+            return accum + cur + ', '
+        }, '')}.`)
 
-        console.log(`The top notes are ${printableTopNotes}.`)
+        await browser.close()
     } catch (err) {
         console.error(err)
+        await browser.close()
     }
 }
 
-scrapeFragrantica('https://www.fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-Zebra-Collector-64627.html')
+scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-Zebra-Collector-64627.html')
+
+// scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Xerjoff/Lira-11801.html')
+
