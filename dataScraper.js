@@ -1,15 +1,5 @@
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-// const cheerio = require('cheerio')
-// const axios = require('axios')
-// const axiosCookieJarSupport = require('axios-cookiejar-support').default
-// const tough = require('tough-cookie')
-
-// axios.defaults.baseUrl = ''
-
-// axiosCookieJarSupport(axios)
-
-// const cookieJar = new tough.CookieJar()
 
 puppeteer.use(StealthPlugin())
 
