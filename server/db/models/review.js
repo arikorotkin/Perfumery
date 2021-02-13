@@ -4,15 +4,17 @@ const db = require('../db')
 const Review = db.define('review', {
     rating: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: false,
         validate: {
-            notNull: true,
             isInt: true
         }
     },
     text: {
         type: Sequelize.TEXT,
+        allowNull: true,
+        unique: false,
         validate: {
-            notNull: false,
             notEmpty: false
         }
     }

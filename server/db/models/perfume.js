@@ -4,29 +4,33 @@ const db = require('../db')
 const Perfume = db.define('perfume', {
     name: {
         type: Sequelize.STRING,
+        allowNull: false,
+        unique: false,
         validate: {
-            notNull: true,
             notEmpty: true
         }
     },
     year: {
         type: Sequelize.INTEGER,
+        allowNull: true,
+        unique: false,
         validate: {
             isInt: true,
-            notNull: false
         }
     },
     gender: {
         type: Sequelize.STRING,
+        allowNull: true,
+        unique: false,
         validate: {
-            notNull: false,
             notEmpty: true
         }
     },
     url: {
         type: Sequelize.STRING,
+        allowNull: true,
+        unique: true,
         validate: {
-            notNull: false,
             isUrl: true
         }
     }
