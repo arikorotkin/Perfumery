@@ -80,7 +80,8 @@ async function scrapeFragranticaPerfumePage(url) {
             year,
             topNotes: topNoteChildren,
             middleNotes: middleNoteChildren,
-            baseNotes: baseNoteChildren
+            baseNotes: baseNoteChildren,
+            url
         }
 
         await browser.close()
@@ -90,13 +91,15 @@ async function scrapeFragranticaPerfumePage(url) {
     }
 }
 
+module.exports = scrapeFragranticaPerfumePage
+
 
 // test url 1
-scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-Zebra-Collector-64627.html')
+// scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-Zebra-Collector-64627.html')
 
 // test url 2
-scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Xerjoff/Lira-11801.html')
+// scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Xerjoff/Lira-11801.html')
 
 // test url 3
-scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Calvin-Klein/CK-One-276.html')
+// scrapeFragranticaPerfumePage('https://www.fragrantica.com/perfume/Calvin-Klein/CK-One-276.html')
 
