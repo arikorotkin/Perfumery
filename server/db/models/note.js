@@ -3,11 +3,19 @@ const db = require('../db')
 
 const Note = db.define('note', {
     name: {
-        type: Sequelize.string,
+        type: Sequelize.STRING,
         allowNull: false,
         unique: true,
         validate: {
             notEmpty: true
+        }
+    },
+    description: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+        unique: false,
+        validate: {
+            notEmpty: false
         }
     },
     url: {

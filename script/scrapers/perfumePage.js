@@ -72,6 +72,8 @@ async function scrapeFragranticaPerfumePage(url) {
             return parseInt(description.slice(referenceInd + 12, referenceInd + 16))
         })
 
+        await browser.close()
+
         return {
             name: perfumeName,
             brands: brandChildren,
@@ -83,8 +85,6 @@ async function scrapeFragranticaPerfumePage(url) {
             baseNotes: baseNoteChildren,
             url
         }
-
-        await browser.close()
     } catch (err) {
         console.error(err)
         await browser.close()
