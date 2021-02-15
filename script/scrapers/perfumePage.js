@@ -18,8 +18,13 @@ async function scrapeFragranticaPerfumePage(url) {
         await page.waitForXPath('//*[@id="main-content"]/div[1]/div[1]/div/div[2]/div[5]/div/p[1]')
        
         // brand
-        const brandChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a > span', arrOfBrands => {
-            return arrOfBrands.map(child => child.textContent.trim())
+        const brandChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a', arrOfBrands => {
+            return arrOfBrands.map(child => {
+                return {
+                    name: child.textContent.trim(),
+                    url: child.getAttribute('href')
+                }
+            })
         })
         
         // name & gender
@@ -74,18 +79,17 @@ async function scrapeFragranticaPerfumePage(url) {
 
         await browser.close()
 
-        // rewrite brands to be objects that include URL
-        return {
-            name: perfumeName,
-            brands: brandChildren,
-            perfumers: perfumerChildren,
-            gender: perfumeGender,
-            year: perfumeYear,
-            topNotes: topNoteChildren,
-            middleNotes: middleNoteChildren,
-            baseNotes: baseNoteChildren,
-            url
-        }
+        return [
+            {
+                name: perfumeName,
+                gender: perfumeGender,
+                year: perfumeYear,
+                url
+            },
+            brandChildren,
+            perfumerChildren,
+            [topNoteChildren, middleNoteChildren, baseNoteChildren]
+        ]
     } catch (err) {
         console.error(err)
         await browser.close()

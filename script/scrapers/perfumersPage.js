@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 
+const scrapeFragranticaPerfumePage = require('./perfumePage')
+
 puppeteer.use(StealthPlugin())
 
 async function scrapeFragranticaPerfumerPage(url) {
@@ -22,20 +24,42 @@ async function scrapeFragranticaPerfumerPage(url) {
             return arrOfPerfumeEls.map(perfume => 'https://www.fragrantica.com' + perfume.getAttribute('href'))
         })
 
-        console.log(`${perfumerName}: There are ${perfumeUrls.length} perfumes on the page. The first is found at ${perfumeUrls[0]}; the last is found at ${perfumeUrls[perfumeUrls.length - 1]}.`)
-
         await browser.close()
 
-        return {
+        const perfumes = perfumeUrls.map(perfumeUrl => scrapeFragranticaPerfumePage(perfumeUrl))
+
+        return [{
             name: perfumerName,
-            perfumes: perfumeUrls,
             url
-        }
+        }, perfumes]
     } catch (err) {
         await browser.close()
         console.error(err)
     }
 }
+
+async function scrapeFragranticaPerfumersPage() {
+    try {
+        const browser = await puppeteer.launch({ headless: true })
+        const page = await browser.newPage()
+        await page.goto('https://www.fragrantica.com/noses/')
+
+        await page.waitForXPath('//*[@id="main-content"]/div[1]/div[1]/div/div[5]/a')
+
+        const perfumerPageUrls = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div > a', arrOfPerfumers => {
+            return arrOfPerfumers.map(perfumerEl => 'https://www.fragrantica.com' + perfumerEl.getAttribute('href'))
+        })
+
+        await browser.close()
+
+        return perfumerPageUrls.map(url => scrapeFragranticaPerfumerPage(url))
+    } catch (err) {
+        await browser.close()
+        console.error(err)
+    }
+}
+
+module.exports = scrapeFragranticaPerfumersPage
 
 // test url 1
 scrapeFragranticaPerfumerPage('https://www.fragrantica.com/noses/Adriana_Medina-Baez.html')
