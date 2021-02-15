@@ -66,31 +66,32 @@ async function scrapeFragranticaPerfumePage(url) {
         })
 
         // year
-        const year = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(5) > div > p:nth-child(1)', yearEl => {
+        const perfumeYear = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(5) > div > p:nth-child(1)', yearEl => {
             const description = yearEl.textContent
             const referenceInd = description.indexOf('launched in ')
             return parseInt(description.slice(referenceInd + 12, referenceInd + 16))
         })
+
+        await browser.close()
 
         return {
             name: perfumeName,
             brands: brandChildren,
             perfumers: perfumerChildren,
             gender: perfumeGender,
-            year,
+            year: perfumeYear,
             topNotes: topNoteChildren,
             middleNotes: middleNoteChildren,
             baseNotes: baseNoteChildren,
             url
         }
-
-        await browser.close()
     } catch (err) {
         console.error(err)
         await browser.close()
     }
 }
 
+// this should eventually export function that calls the above on all perfumes
 module.exports = scrapeFragranticaPerfumePage
 
 
