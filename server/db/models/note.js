@@ -10,7 +10,7 @@ const Note = db.define('note', {
             notEmpty: true
         }
     },
-    description: {
+    odorProfile: {
         type: Sequelize.TEXT,
         allowNull: true,
         unique: false,
