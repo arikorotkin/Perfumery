@@ -16,5 +16,5 @@ ARI NOTES 14 FEB 2021:
 - since there is no "all brands" page on Frag, we will have to get brands from perfume pages
 - scrape order should be the following:
   1. notes (& categories)
-  2. perfumers (which will internally scrape perfumes, which will internall scrape brands)
+  2. perfumers (which will internally scrape perfumes, which will internally scrape brands)
 - there might need to be some retooling but it seems like it would make sense to scrape reviews along with users, not perfumes? (depends on user page)

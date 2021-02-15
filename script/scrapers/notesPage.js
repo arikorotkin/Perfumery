@@ -15,12 +15,12 @@ async function scrapeFragranticaNotePage(url) {
 
         // name
         const noteName = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div:nth-child(1) > div > div:nth-child(1) > h1', noteNameEl => {
-            return noteNameEl.textContent
+            return noteNameEl.textContent.trim()
         })
 
         // category
         const noteCategory = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div:nth-child(1) > div > div:nth-child(1) > h3 > b', noteCategoryEl => {
-            return noteCategoryEl.textContent
+            return noteCategoryEl.textContent.trim()
         })
 
         // Odor Profile
