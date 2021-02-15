@@ -19,12 +19,12 @@ async function scrapeFragranticaPerfumePage(url) {
        
         // brand
         const brandChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a > span', arrOfBrands => {
-            return arrOfBrands.map(child => child.textContent)
+            return arrOfBrands.map(child => child.textContent.trim())
         })
         
         // name & gender
         const perfumeNameAndGender = await page.$eval('#toptop > h1', nameEl => {
-             const titleText = nameEl.textContent.split(' for ')
+             const titleText = nameEl.textContent.trim().split(' for ')
              if (titleText.length === 2) {
                 return titleText
              }
@@ -47,27 +47,27 @@ async function scrapeFragranticaPerfumePage(url) {
 
         // top notes
         const topNoteChildren = await page.$$eval('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(4) > div > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent)
+            return arrOfChildren.map(child => child.textContent.trim())
         })
 
         // middle notes
         const middleNoteChildren = await page.$$eval('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(6) > div > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent)
+            return arrOfChildren.map(child => child.textContent.trim())
         })
 
         // base notes
         const baseNoteChildren = await page.$$eval('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(8) > div > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent)
+            return arrOfChildren.map(child => child.textContent.trim())
         })
 
         // perfumers
         const perfumerChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(3) > div.grid-x.grid-padding-x.grid-padding-y.small-up-2 > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent)
+            return arrOfChildren.map(child => child.textContent.trim())
         })
 
         // year
         const perfumeYear = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(5) > div > p:nth-child(1)', yearEl => {
-            const description = yearEl.textContent
+            const description = yearEl.textContent.trim()
             const referenceInd = description.indexOf('launched in ')
             return parseInt(description.slice(referenceInd + 12, referenceInd + 16))
         })
