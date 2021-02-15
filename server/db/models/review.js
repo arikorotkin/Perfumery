@@ -2,20 +2,12 @@ const Sequelize = requre('sequelize')
 const db = require('../db')
 
 const Review = db.define('review', {
-    rating: {
-        type: Sequelize.INTEGER,
+    text: {
+        type: Sequelize.TEXT,
         allowNull: false,
         unique: false,
         validate: {
-            isInt: true
-        }
-    },
-    text: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-        unique: false,
-        validate: {
-            notEmpty: false
+            notEmpty: true
         }
     }
 })

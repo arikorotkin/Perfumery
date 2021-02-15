@@ -74,6 +74,7 @@ async function scrapeFragranticaPerfumePage(url) {
 
         await browser.close()
 
+        // rewrite brands to be objects that include URL
         return {
             name: perfumeName,
             brands: brandChildren,

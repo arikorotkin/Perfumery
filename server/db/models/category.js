@@ -9,14 +9,6 @@ const Category = db.define('category', {
         validate: {
             notEmpty: true
         }
-    },
-    url: {
-        type: Sequelize.STRING,
-        allowNull: true,
-        unique: true,
-        validate: {
-            isUrl: true,
-        }
     }
 })
 
