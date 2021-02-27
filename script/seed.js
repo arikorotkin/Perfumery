@@ -19,14 +19,22 @@ async function seed() {
     try {
         await db.sync({force: true})
 
-        // seed notes and categories
+        // seed notes and categories (ca. 45 min)
         const notesAndCategories = await scrapeFragranticaNotesPage()
+
+        // const notesAndCategories = [[{
+        //     name: 'Note Name',
+        //     odorProfile: 'This is the odor profile for the note.',
+        //     url: 'www.example.com'
+        // },
+        // {
+        //     name: 'Category Name'
+        // }]]
 
         console.log(`notes and categories scraped: returned ${notesAndCategories.length} items.`)
         console.log('seeding notes and categories...')
 
         for (let i = 0; i < notesAndCategories.length; i++) {
-            console.log(`seeding note ${notesAndCategories[i][0].name} in category ${notesAndCategories[i][1].name}`)
             const newNote = await Note.create(notesAndCategories[i][0])
             const [newCategory, created] = await Category.findOrCreate({where: notesAndCategories[i][1]})
             if (created) {console.log(`created category ${newCategory.name}`)}

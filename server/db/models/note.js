@@ -5,7 +5,7 @@ const Note = db.define('note', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         validate: {
             notEmpty: true
         }

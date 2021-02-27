@@ -69,21 +69,32 @@ async function scrapeFragranticaNotesPage() {
 
         await browser.close()
 
-        console.log('scraping...')
+        console.log('scraping notes and categories...')
 
         const scrapedNotesAndCategories = []
 
         const scrapeNotes = async () => {
             for (let i = 0; i < notePageUrls.length; i ++) {
-                await sleep(2000)
-                const newNoteAndCategory = scrapeFragranticaNotePage(notePageUrls[i])
+                await sleep(1000)
+                const newNoteAndCategory = await scrapeFragranticaNotePage(notePageUrls[i])
                 scrapedNotesAndCategories.push(newNoteAndCategory)
             }
         }
 
-        scrapeNotes()
+        await scrapeNotes()
 
-        await sleep(notePageUrls.length * 2200)
+        // test
+        // const testUrls = ['https://www.fragrantica.com/notes/Bergamot-75.html', 'https://www.fragrantica.com/notes/Bearberry-344.html', 'https://www.fragrantica.com/notes/White-Ginger-Lily-739.html']
+        // const scrapeNotes = async () => {
+        //     for (let i = 0; i < testUrls.length; i ++) {
+        //         await sleep(2000)
+        //         const newNoteAndCategory = await scrapeFragranticaNotePage(notePageUrls[i])
+        //         console.log(`just scraped note ${newNoteAndCategory[0].name} in category ${newNoteAndCategory[1].name}`)
+        //         scrapedNotesAndCategories.push(newNoteAndCategory)
+        //     }
+        // }
+
+        // await scrapeNotes()
 
         return scrapedNotesAndCategories
 
