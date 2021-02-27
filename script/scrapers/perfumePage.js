@@ -92,7 +92,9 @@ async function scrapeFragranticaPerfumePage(url) {
         ]
     } catch (err) {
         console.error(err)
-        await browser.close()
+        if (typeof browser !== 'undefined') {
+            await browser.close()
+        }
     }
 }
 

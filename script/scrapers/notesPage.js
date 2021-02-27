@@ -97,13 +97,11 @@ async function scrapeFragranticaNotesPage() {
         // await scrapeNotes()
 
         return scrapedNotesAndCategories
-
-        // return notePageUrls.map(url => scrapeFragranticaNotePage(url))
     } catch (err) {
-        // if (!!browser) {
-        //     await browser.close()
-        // }
         console.error(err)
+        if (typeof browser !== 'undefined') {
+            await browser.close()
+        }
     }
 }
 

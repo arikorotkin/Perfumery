@@ -54,8 +54,10 @@ async function scrapeFragranticaPerfumersPage() {
 
         return perfumerPageUrls.map(url => scrapeFragranticaPerfumerPage(url))
     } catch (err) {
-        await browser.close()
         console.error(err)
+        if (typeof browser !== 'undefined') {
+            await browser.close()
+        }
     }
 }
 
