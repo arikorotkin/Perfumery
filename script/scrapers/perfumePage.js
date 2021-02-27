@@ -66,9 +66,9 @@ async function scrapeFragranticaPerfumePage(url) {
         })
 
         // perfumers
-        const perfumerChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(3) > div.grid-x.grid-padding-x.grid-padding-y.small-up-2 > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent.trim())
-        })
+        // const perfumerChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(3) > div.grid-x.grid-padding-x.grid-padding-y.small-up-2 > div', arrOfChildren => {
+        //     return arrOfChildren.map(child => child.textContent.trim())
+        // })
 
         // year
         const perfumeYear = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(5) > div > p:nth-child(1)', yearEl => {
@@ -87,7 +87,7 @@ async function scrapeFragranticaPerfumePage(url) {
                 url
             },
             brandChildren,
-            perfumerChildren,
+            // perfumerChildren,
             [topNoteChildren, middleNoteChildren, baseNoteChildren]
         ]
     } catch (err) {

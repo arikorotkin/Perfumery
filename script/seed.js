@@ -3,11 +3,12 @@
 const db = require('../server/db')
 
 const scrapeFragranticaNotesPage = require('./scrapers/notesPage')
-const {sleep} = require('./utils')
+const scrapeFragranticaPerfumersPage = require('./scrapers/perfumersPage')
 
 const {
     Brand,
     Category,
+    FragranticaUser,
     Note,
     Perfume,
     PerfumeNote,
@@ -20,26 +21,66 @@ async function seed() {
         await db.sync({force: true})
 
         // seed notes and categories (ca. 45 min)
-        const notesAndCategories = await scrapeFragranticaNotesPage()
+        // const notesAndCategories = await scrapeFragranticaNotesPage()
 
-        // const notesAndCategories = [[{
-        //     name: 'Note Name',
-        //     odorProfile: 'This is the odor profile for the note.',
-        //     url: 'www.example.com'
-        // },
-        // {
-        //     name: 'Category Name'
-        // }]]
-
-        console.log(`notes and categories scraped: returned ${notesAndCategories.length} items.`)
+        // console.log(`notes and categories scraped: returned ${notesAndCategories.length} items`)
         console.log('seeding notes and categories...')
 
-        for (let i = 0; i < notesAndCategories.length; i++) {
-            const newNote = await Note.create(notesAndCategories[i][0])
-            const [newCategory, created] = await Category.findOrCreate({where: notesAndCategories[i][1]})
-            if (created) {console.log(`created category ${newCategory.name}`)}
-            await newCategory.addNote(newNote)
+        // for (let i = 0; i < notesAndCategories.length; i++) {
+        //     const newNote = await Note.create(notesAndCategories[i][0])
+        //     const [newCategory, created] = await Category.findOrCreate({where: notesAndCategories[i][1]})
+        //     if (created) {console.log(`created category ${newCategory.name}`)}
+        //     await newCategory.addNote(newNote)
+        // }
+
+        console.log('finished seeding notes and categories')
+
+        // seed perfumers, perfumes, and brands
+        // const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
+
+        // test
+        const perfumersPerfumesAndBrands = [
+            [{
+                name: 'Perfumer Johnson',
+                url: 'https://www.perfumer.example.com'
+            },
+            [
+                {
+                    name: 'Perfume Name',
+                    gender: 'boys boys boys',
+                    year: 2001,
+                    url: 'https://www.perfume.example.com'
+                },
+                [
+                    {
+                        name: 'Brand Name',
+                        url: 'https://www.brand.example.com'
+                    }
+                ]
+            ]]
+        ]
+
+        console.log(`perfumers scraped: returned ${perfumersPerfumesAndBrands.length} items`)
+        console.log('seeding perfumers, perfumes, and brands...')
+
+        for (let i = 0; i < perfumersPerfumesAndBrands.length; i++) {
+            const newPerfumer = await Perfumer.create(perfumersPerfumesAndBrands[i][0])
+            for (let j = 0; j < perfumersPerfumesAndBrands[i][1].length; j++) {
+                const [newPerfume, createdPerfume] = await Perfume.findOrCreate({
+                    where: perfumersPerfumesAndBrands[i][1][j][0]
+                })
+                for (let k = 0; k < perfumersPerfumesAndBrands[i][1][j][1].length; k++) {
+                    const [newBrand, createdBrand] = await Brand.findOrCreate({
+                        where: perfumersPerfumesAndBrands[i][1][j][1][k]
+                    })
+                    await newBrand.addPerfume(newPerfume)
+                    if (createdBrand) {console.log(`created new brand ${newBrand.name}`)}
+                }
+                await newPerfume.addPerfumer(newPerfumer)
+            }
         }
+
+        console.log('finished seeding perfumers, perfumes, and brands')
 
         console.log('seeded successfully')
     } catch(err) {
@@ -48,7 +89,7 @@ async function seed() {
 }
 
 async function runSeed() {
-    console.log('seeding...')
+    console.log('running seed function...')
     try {
       await seed()
     } catch (err) {

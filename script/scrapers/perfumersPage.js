@@ -26,7 +26,11 @@ async function scrapeFragranticaPerfumerPage(url) {
 
         await browser.close()
 
-        const perfumes = perfumeUrls.map(perfumeUrl => scrapeFragranticaPerfumePage(perfumeUrl))
+        console.log('scraping perfumers, perfumes, and brands...')
+
+        const perfumes = perfumeUrls.map(async perfumeUrl => {
+            return await scrapeFragranticaPerfumePage(perfumeUrl)
+        })
 
         return [{
             name: perfumerName,
