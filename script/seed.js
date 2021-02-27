@@ -3,6 +3,7 @@
 const db = require('../server/db')
 
 const scrapeFragranticaNotesPage = require('./scrapers/notesPage')
+const {sleep} = require('./utils')
 
 const {
     Brand,
@@ -19,12 +20,19 @@ async function seed() {
         await db.sync({force: true})
 
         // seed notes and categories
-        const notesAndCategories = scrapeFragranticaNotesPage()
+        const notesAndCategories = await scrapeFragranticaNotesPage()
+
+        console.log(`notes and categories scraped: returned ${notesAndCategories.length} items.`)
+        console.log('seeding notes and categories...')
+
         for (let i = 0; i < notesAndCategories.length; i++) {
-            const newNote = await Note.findOrCreate({where: notesAndCategories[i][0]})
-            const newCategory = await Category.findOrCreate({where: notesAndCategories[i][1]})
+            console.log(`seeding note ${notesAndCategories[i][0].name} in category ${notesAndCategories[i][1].name}`)
+            const newNote = await Note.create(notesAndCategories[i][0])
+            const [newCategory, created] = await Category.findOrCreate({where: notesAndCategories[i][1]})
+            if (created) {console.log(`created category ${newCategory.name}`)}
             await newCategory.addNote(newNote)
         }
+
         console.log('seeded successfully')
     } catch(err) {
         console.error(err)

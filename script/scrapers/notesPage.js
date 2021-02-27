@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const {sleep} = require('../utils')
 
 puppeteer.use(StealthPlugin())
 
@@ -24,7 +25,9 @@ async function scrapeFragranticaNotePage(url) {
         })
 
         // Odor Profile
-        const noteOdorProfile = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div.cell.callout > p', noteProfileEl => {
+        const noteOdorProfile = await page.evaluate(() => {
+            const noteProfileEl = document.querySelector('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div.cell.callout > p')
+            if (!noteProfileEl) {return null}
             let initialTextContent = noteProfileEl.textContent.trim()
             if (initialTextContent.startsWith('Odor profile: ')) {
                 initialTextContent = initialTextContent.slice(14)
@@ -47,7 +50,7 @@ async function scrapeFragranticaNotePage(url) {
         }]
     } catch (err) {
         console.error(err)
-        await browser.close()
+        // await browser.close()
     }
 }
 
@@ -68,20 +71,32 @@ async function scrapeFragranticaNotesPage() {
 
         console.log('scraping...')
 
-        const scrapedUrls = notePageUrls.map(url => scrapeFragranticaNotePage(url))
+        const scrapedNotesAndCategories = []
 
-        console.log('done scraping', `the first note and category are ${scrapedUrls[0][0].name}, ${scrapedUrls[0][1].name}`)
+        const scrapeNotes = async () => {
+            for (let i = 0; i < notePageUrls.length; i ++) {
+                await sleep(2000)
+                const newNoteAndCategory = scrapeFragranticaNotePage(notePageUrls[i])
+                scrapedNotesAndCategories.push(newNoteAndCategory)
+            }
+        }
+
+        scrapeNotes()
+
+        await sleep(notePageUrls.length * 2200)
+
+        return scrapedNotesAndCategories
 
         // return notePageUrls.map(url => scrapeFragranticaNotePage(url))
     } catch (err) {
-        await browser.close()
+        // if (!!browser) {
+        //     await browser.close()
+        // }
         console.error(err)
     }
 }
 
 module.exports = scrapeFragranticaNotesPage
-
-scrapeFragranticaNotesPage()
 
 // test url 1
 // scrapeFragranticaNotePage('https://www.fragrantica.com/notes/Bergamot-75.html')
