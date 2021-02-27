@@ -37,12 +37,14 @@ async function scrapeFragranticaNotePage(url) {
 
         await browser.close()
 
-        return {
+        return [{
             name: noteName,
-            category: noteCategory,
             odorProfile: noteOdorProfile,
             url
-        }
+        },
+        {
+            name: noteCategory
+        }]
     } catch (err) {
         console.error(err)
         await browser.close()
@@ -64,7 +66,13 @@ async function scrapeFragranticaNotesPage() {
 
         await browser.close()
 
-        return notePageUrls.map(url => scrapeFragranticaNotePage(url))
+        console.log('scraping...')
+
+        const scrapedUrls = notePageUrls.map(url => scrapeFragranticaNotePage(url))
+
+        console.log('done scraping', `the first note and category are ${scrapedUrls[0][0].name}, ${scrapedUrls[0][1].name}`)
+
+        // return notePageUrls.map(url => scrapeFragranticaNotePage(url))
     } catch (err) {
         await browser.close()
         console.error(err)
@@ -72,6 +80,8 @@ async function scrapeFragranticaNotesPage() {
 }
 
 module.exports = scrapeFragranticaNotesPage
+
+scrapeFragranticaNotesPage()
 
 // test url 1
 // scrapeFragranticaNotePage('https://www.fragrantica.com/notes/Bergamot-75.html')
