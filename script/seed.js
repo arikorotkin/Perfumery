@@ -3,7 +3,8 @@
 const db = require('../server/db')
 
 const scrapeFragranticaNotesPage = require('./scrapers/notesPage')
-const scrapeFragranticaPerfumersPage = require('./scrapers/perfumersPage')
+const {scrapeFragranticaPerfumersPage, scrapeFragranticaPerfumerPage} = require('./scrapers/perfumersPage')
+const {sleep} = require('./utils')
 
 const {
     Brand,
@@ -39,26 +40,20 @@ async function seed() {
         // const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
 
         // test
-        const perfumersPerfumesAndBrands = [
-            [{
-                name: 'Perfumer Johnson',
-                url: 'https://www.perfumer.example.com'
-            },
-            [
-                {
-                    name: 'Perfume Name',
-                    gender: 'boys boys boys',
-                    year: 2001,
-                    url: 'https://www.perfume.example.com'
-                },
-                [
-                    {
-                        name: 'Brand Name',
-                        url: 'https://www.brand.example.com'
-                    }
-                ]
-            ]]
-        ]
+        const perfumersPerfumesAndBrands = []
+
+        const perfumerPageUrls = ['https://www.fragrantica.com/noses/Ashley_Eden_Kessler.html', 'https://www.fragrantica.com/noses/Beatrice_Aguilar.html']
+
+        const scrapePerfumers = async () => {
+            for (let i = 0; i < perfumerPageUrls.length; i++) {
+                await sleep(1750)
+                const newPerfumerPerfumesAndBrands = await scrapeFragranticaPerfumerPage(perfumerPageUrls[i])
+                perfumersPerfumesAndBrands.push(newPerfumerPerfumesAndBrands)
+            }
+        }
+
+        await scrapePerfumers()
+        // end test
 
         console.log(`perfumers scraped: returned ${perfumersPerfumesAndBrands.length} items`)
         console.log('seeding perfumers, perfumes, and brands...')
