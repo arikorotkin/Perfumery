@@ -37,10 +37,26 @@ async function seed() {
         console.log('finished seeding notes and categories')
 
         // seed perfumers, perfumes, and brands
-        const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
+        // const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
 
-        console.log(`perfumers scraped: returned ${perfumersPerfumesAndBrands.length} items`)
+        // console.log(`perfumers scraped: returned ${perfumersPerfumesAndBrands.length} items`)
         console.log('seeding perfumers, perfumes, and brands...')
+
+        // test
+
+        const perfumersPerfumesAndBrands = []
+        const testPerfumerUrls = ['https://www.fragrantica.com/noses/Ashley_Eden_Kessler.html']
+
+        const scrapeTestPerfumerUrls = async () => {
+            for (let i = 0; i < testPerfumerUrls.length; i++) {
+                await sleep(1750)
+                const newPerfumer = await scrapeFragranticaPerfumerPage(testPerfumerUrls[i])
+                perfumersPerfumesAndBrands.push(newPerfumer)
+            }
+        }
+
+        await scrapeTestPerfumerUrls()
+        // end test
 
         for (let i = 0; i < perfumersPerfumesAndBrands.length; i++) {
             const newPerfumer = await Perfumer.create(perfumersPerfumesAndBrands[i][0])

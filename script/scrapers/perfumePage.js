@@ -55,8 +55,10 @@ async function scrapeFragranticaPerfumePage(url) {
                 const noteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(3) > div > div')
                 const noteElsArr = []
                 noteEls.forEach(noteEl => {
+                    const aEl = noteEl.querySelector('a')
                     noteElsArr.push({
-                        name: noteEl.textContent.trim()
+                        name: noteEl.textContent.trim(),
+                        url: aEl.getAttribute('href')
                     })
                 })
                 return noteElsArr
@@ -69,18 +71,24 @@ async function scrapeFragranticaPerfumePage(url) {
                 []
             ]
             topNoteEls.forEach(topNoteEl => {
+                const aEl = topNoteEl.querySelector('a')
                 layeredNotes[0].push({
-                    name: topNoteEl.textContent.trim()
+                    name: topNoteEl.textContent.trim(),
+                    url: aEl.getAttribute('href')
                 })
             })
             middleNoteEls.forEach(middleNoteEl => {
+                const aEl = middlenoteEl.querySelector('a')
                 layeredNotes[1].push({
-                    name: middleNoteEl.textContent.trim()
+                    name: middleNoteEl.textContent.trim(),
+                    url: aEl.getAttribute('href')
                 })
             })
             baseNoteEls.forEach(baseNoteEl => {
+                const aEl = basenoteEl.querySelector('a')
                 layeredNotes[2].push({
-                    name: baseNoteEl.textContent.trim()
+                    name: baseNoteEl.textContent.trim(),
+                    url: aEl.getAttribute('href')
                 })
             })
             return layeredNotes
