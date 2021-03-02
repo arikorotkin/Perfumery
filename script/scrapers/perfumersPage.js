@@ -32,7 +32,6 @@ async function scrapeFragranticaPerfumerPage(url) {
         const scrapePerfumes = async () => {
             for (let i = 0; i < perfumeUrls.length; i++) {
                 await sleep(1000)
-                console.log(`scraping perfume at ${perfumeUrls[i]}`)
                 const newPerfumeAndBrands = await scrapeFragranticaPerfumePage(perfumeUrls[i])
                 perfumes.push(newPerfumeAndBrands)
             }

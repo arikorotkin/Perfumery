@@ -7,7 +7,7 @@ const Perfumer = db.define('perfumer', {
         allowNull: false,
         unique: false,
         validate: {
-            isEmpty: false
+            notEmpty: true
         }
     },
     url: {

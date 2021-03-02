@@ -49,38 +49,39 @@ async function scrapeFragranticaPerfumePage(url) {
         }
 
         // notes
-        // rewrite – NODE LISTS ARE NOT ARRAYS (can't use map)
         const noteChildren = await page.evaluate(() => {
             const topNoteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(4) > div > div')
             if (!topNoteEls.length) {
                 const noteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(3) > div > div')
-                return noteEls.map(noteEl => {
-                    return {
-                        note: noteEl.textContent.trim(),
-                        layer: null
-                    }
+                const noteElsArr = []
+                noteEls.forEach(noteEl => {
+                    noteElsArr.push({
+                        name: noteEl.textContent.trim()
+                    })
                 })
+                return noteElsArr
             }
             const middleNoteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(6) > div > div')
             const baseNoteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(8) > div > div')
-            const layeredNotes = {}
-            layeredNotes.top = topNoteEls.map(topNoteEl => {
-                return {
-                    note: topNoteEl.textContent.trim(),
-                    layer: 'top'
-                }
+            const layeredNotes = [
+                [],
+                [],
+                []
+            ]
+            topNoteEls.forEach(topNoteEl => {
+                layeredNotes[0].push({
+                    name: topNoteEl.textContent.trim()
+                })
             })
-            layeredNotes.middle = middleNoteEls.map(middleNoteEl => {
-                return {
-                    note: middleNoteEl.textContent.trim(),
-                    layer: 'middle'
-                }
+            middleNoteEls.forEach(middleNoteEl => {
+                layeredNotes[1].push({
+                    name: middleNoteEl.textContent.trim()
+                })
             })
-            layeredNotes.base = baseNoteEls.map(baseNoteEl => {
-                return {
-                    note: baseNoteEl.textContent.trim(),
-                    layer: 'base'
-                }
+            baseNoteEls.forEach(baseNoteEl => {
+                layeredNotes[2].push({
+                    name: baseNoteEl.textContent.trim()
+                })
             })
             return layeredNotes
         })
@@ -94,7 +95,8 @@ async function scrapeFragranticaPerfumePage(url) {
         const perfumeYear = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(5) > div > p:nth-child(1)', yearEl => {
             const description = yearEl.textContent.trim()
             const referenceInd = description.indexOf('launched in ')
-            return parseInt(description.slice(referenceInd + 12, referenceInd + 16))
+            const tempYear = parseInt(description.slice(referenceInd + 12, referenceInd + 16))
+            return isNaN(tempYear) ? null : tempYear
         })
 
         await browser.close()

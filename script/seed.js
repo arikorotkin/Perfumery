@@ -37,23 +37,7 @@ async function seed() {
         console.log('finished seeding notes and categories')
 
         // seed perfumers, perfumes, and brands
-        // const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
-
-        // test
-        const perfumersPerfumesAndBrands = []
-
-        const perfumerPageUrls = ['https://www.fragrantica.com/noses/Ashley_Eden_Kessler.html', 'https://www.fragrantica.com/noses/Beatrice_Aguilar.html']
-
-        const scrapePerfumers = async () => {
-            for (let i = 0; i < perfumerPageUrls.length; i++) {
-                await sleep(1750)
-                const newPerfumerPerfumesAndBrands = await scrapeFragranticaPerfumerPage(perfumerPageUrls[i])
-                perfumersPerfumesAndBrands.push(newPerfumerPerfumesAndBrands)
-            }
-        }
-
-        await scrapePerfumers()
-        // end test
+        const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
 
         console.log(`perfumers scraped: returned ${perfumersPerfumesAndBrands.length} items`)
         console.log('seeding perfumers, perfumes, and brands...')
@@ -70,6 +54,27 @@ async function seed() {
                     })
                     await newBrand.addPerfume(newPerfume)
                     if (createdBrand) {console.log(`created new brand ${newBrand.name}`)}
+                }
+                const perfumeNotes = perfumersPerfumesAndBrands[i][1][j][2]
+                if (perfumeNotes.length === perfumeNotes.flat().length) {
+                    for (let l = 0; l < perfumeNotes.length; l++) {
+                        const [newNote, createdNote] = await Note.findOrCreate({
+                            where: perfumeNotes[l]
+                        })
+                        await newNote.addPerfume(newPerfume)
+                        if (createdNote) {console.log(`created new unscraped note ${newNote.name}`)}
+                    }
+                } else {
+                    for (let l = 0; l < perfumeNotes.length; l++) {
+                        for (let m = 0; m < perfumeNotes[l].length; m++) {
+                            const layer = m === 0 ? 'top' : (m === 1 ? 'middle' : 'base')
+                            const [newNote, createdNote] = await Note.findOrCreate({
+                                where: perfumeNotes[l][m]
+                            })
+                            await newNote.addPerfume(newPerfume, {through: {layer}})
+                            if (createdNote) {console.log(`created new unscraped note ${newNote.name}`)}
+                        }
+                    }
                 }
                 await newPerfume.addPerfumer(newPerfumer)
             }
