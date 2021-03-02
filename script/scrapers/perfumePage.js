@@ -39,8 +39,8 @@ async function scrapeFragranticaPerfumePage(url) {
         let perfumeGender = perfumeNameAndGender[1]
 
         brandChildren.forEach(brand => {
-            if (perfumeName.includes(brand) && brand.length !== perfumeName.length) {
-                perfumeName = perfumeName.replace(brand, '').trim()
+            if (perfumeName.includes(brand.name) && brand.name.length !== perfumeName.length) {
+                perfumeName = perfumeName.replace(brand.name, '').trim()
             }
         })
 
