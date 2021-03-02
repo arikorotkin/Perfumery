@@ -83,7 +83,7 @@ async function seed() {
                 } else {
                     for (let l = 0; l < perfumeNotes.length; l++) {
                         for (let m = 0; m < perfumeNotes[l].length; m++) {
-                            const layer = m === 0 ? 'top' : (m === 1 ? 'middle' : 'base')
+                            const layer = m === 0 ? 'top' : (m === perfumeNotes.length - 1 ? 'base' : 'middle')
                             const [newNote, createdNote] = await Note.findOrCreate({
                                 where: perfumeNotes[l][m]
                             })
