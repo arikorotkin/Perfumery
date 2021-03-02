@@ -31,7 +31,7 @@ async function scrapeFragranticaPerfumerPage(url) {
 
         const scrapePerfumes = async () => {
             for (let i = 0; i < perfumeUrls.length; i++) {
-                await sleep(1000)
+                await sleep(10500)
                 const newPerfumeAndBrands = await scrapeFragranticaPerfumePage(perfumeUrls[i])
                 perfumes.push(newPerfumeAndBrands)
             }
@@ -68,7 +68,7 @@ async function scrapeFragranticaPerfumersPage() {
 
         const scrapePerfumers = async () => {
             for (let i = 0; i < perfumerPageUrls.length; i++) {
-                await sleep(1750)
+                await sleep(12500)
                 const newPerfumerPerfumesAndBrands = await scrapeFragranticaPerfumerPage(perfumerPageUrls[i])
                 scrapedPerfumersPerfumesAndBrands.push(newPerfumerPerfumesAndBrands)
             }

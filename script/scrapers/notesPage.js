@@ -75,7 +75,7 @@ async function scrapeFragranticaNotesPage() {
 
         const scrapeNotes = async () => {
             for (let i = 0; i < notePageUrls.length; i++) {
-                await sleep(1000)
+                await sleep(10500)
                 const newNoteAndCategory = await scrapeFragranticaNotePage(notePageUrls[i])
                 scrapedNotesAndCategories.push(newNoteAndCategory)
             }

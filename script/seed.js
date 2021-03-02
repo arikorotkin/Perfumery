@@ -12,7 +12,6 @@ const {
     FragranticaUser,
     Note,
     Perfume,
-    PerfumeNote,
     Perfumer,
     Review
 } = require('../server/db/models')
@@ -22,40 +21,40 @@ async function seed() {
         await db.sync({force: true})
 
         // seed notes and categories (ca. 45 min)
-        // const notesAndCategories = await scrapeFragranticaNotesPage()
+        const notesAndCategories = await scrapeFragranticaNotesPage()
 
-        // console.log(`notes and categories scraped: returned ${notesAndCategories.length} items`)
+        console.log(`notes and categories scraped: returned ${notesAndCategories.length} items`)
         console.log('seeding notes and categories...')
 
-        // for (let i = 0; i < notesAndCategories.length; i++) {
-        //     const newNote = await Note.create(notesAndCategories[i][0])
-        //     const [newCategory, created] = await Category.findOrCreate({where: notesAndCategories[i][1]})
-        //     if (created) {console.log(`created category ${newCategory.name}`)}
-        //     await newCategory.addNote(newNote)
-        // }
+        for (let i = 0; i < notesAndCategories.length; i++) {
+            const newNote = await Note.create(notesAndCategories[i][0])
+            const [newCategory, created] = await Category.findOrCreate({where: notesAndCategories[i][1]})
+            if (created) {console.log(`created category ${newCategory.name}`)}
+            await newCategory.addNote(newNote)
+        }
 
         console.log('finished seeding notes and categories')
 
         // seed perfumers, perfumes, and brands
-        // const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
+        const perfumersPerfumesAndBrands =  await scrapeFragranticaPerfumersPage()
 
-        // console.log(`perfumers scraped: returned ${perfumersPerfumesAndBrands.length} items`)
+        console.log(`perfumers scraped: returned ${perfumersPerfumesAndBrands.length} items`)
         console.log('seeding perfumers, perfumes, and brands...')
 
         // test
 
-        const perfumersPerfumesAndBrands = []
-        const testPerfumerUrls = ['https://www.fragrantica.com/noses/Ashley_Eden_Kessler.html']
+        // const perfumersPerfumesAndBrands = []
+        // const testPerfumerUrls = ['https://www.fragrantica.com/noses/Ashley_Eden_Kessler.html']
 
-        const scrapeTestPerfumerUrls = async () => {
-            for (let i = 0; i < testPerfumerUrls.length; i++) {
-                await sleep(1750)
-                const newPerfumer = await scrapeFragranticaPerfumerPage(testPerfumerUrls[i])
-                perfumersPerfumesAndBrands.push(newPerfumer)
-            }
-        }
+        // const scrapeTestPerfumerUrls = async () => {
+        //     for (let i = 0; i < testPerfumerUrls.length; i++) {
+        //         await sleep(1750)
+        //         const newPerfumer = await scrapeFragranticaPerfumerPage(testPerfumerUrls[i])
+        //         perfumersPerfumesAndBrands.push(newPerfumer)
+        //     }
+        // }
 
-        await scrapeTestPerfumerUrls()
+        // await scrapeTestPerfumerUrls()
         // end test
 
         for (let i = 0; i < perfumersPerfumesAndBrands.length; i++) {
