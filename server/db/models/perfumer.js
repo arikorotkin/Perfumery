@@ -1,4 +1,4 @@
-const Sequelize = requre('sequelize')
+const Sequelize = require('sequelize')
 const db = require('../db')
 
 const Perfumer = db.define('perfumer', {
@@ -7,7 +7,7 @@ const Perfumer = db.define('perfumer', {
         allowNull: false,
         unique: false,
         validate: {
-            isEmpty: false
+            notEmpty: true
         }
     },
     url: {

@@ -10,8 +10,6 @@ async function scrapeFragranticaPerfumePage(url) {
         await page.goto(url)
 
         await page.waitForXPath('//*[@id="pyramid"]/div[1]/div/div[2]/div[3]/div')
-        await page.waitForXPath('//*[@id="pyramid"]/div[1]/div/div[2]/div[4]/div')
-        await page.waitForXPath('//*[@id="pyramid"]/div[1]/div/div[2]/div[5]/div')
         await page.waitForXPath('//*[@id="main-content"]/div[1]/div[1]/div/div[3]/div[2]')
         await page.waitForXPath('//*[@id="toptop"]/h1')
         await page.waitForXPath('//*[@id="main-content"]/div[1]/div[1]/div/div[2]/div[1]/div[2]/p/a/span')
@@ -50,31 +48,55 @@ async function scrapeFragranticaPerfumePage(url) {
             perfumeGender = 'all genders'
         }
 
-        // top notes
-        const topNoteChildren = await page.$$eval('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(4) > div > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent.trim())
-        })
-
-        // middle notes
-        const middleNoteChildren = await page.$$eval('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(6) > div > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent.trim())
-        })
-
-        // base notes
-        const baseNoteChildren = await page.$$eval('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(8) > div > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent.trim())
+        // notes
+        const noteChildren = await page.evaluate(() => {
+            const topNoteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(4) > div > div')
+            if (!topNoteEls.length) {
+                const noteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(3) > div > div')
+                const noteElsArr = []
+                noteEls.forEach(noteEl => {
+                    noteElsArr.push({
+                        name: noteEl.textContent.trim()
+                    })
+                })
+                return noteElsArr
+            }
+            const middleNoteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(6) > div > div')
+            const baseNoteEls = document.querySelectorAll('#pyramid > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(8) > div > div')
+            const layeredNotes = [
+                [],
+                [],
+                []
+            ]
+            topNoteEls.forEach(topNoteEl => {
+                layeredNotes[0].push({
+                    name: topNoteEl.textContent.trim()
+                })
+            })
+            middleNoteEls.forEach(middleNoteEl => {
+                layeredNotes[1].push({
+                    name: middleNoteEl.textContent.trim()
+                })
+            })
+            baseNoteEls.forEach(baseNoteEl => {
+                layeredNotes[2].push({
+                    name: baseNoteEl.textContent.trim()
+                })
+            })
+            return layeredNotes
         })
 
         // perfumers
-        const perfumerChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(3) > div.grid-x.grid-padding-x.grid-padding-y.small-up-2 > div', arrOfChildren => {
-            return arrOfChildren.map(child => child.textContent.trim())
-        })
+        // const perfumerChildren = await page.$$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(3) > div.grid-x.grid-padding-x.grid-padding-y.small-up-2 > div', arrOfChildren => {
+        //     return arrOfChildren.map(child => child.textContent.trim())
+        // })
 
         // year
         const perfumeYear = await page.$eval('#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(5) > div > p:nth-child(1)', yearEl => {
             const description = yearEl.textContent.trim()
             const referenceInd = description.indexOf('launched in ')
-            return parseInt(description.slice(referenceInd + 12, referenceInd + 16))
+            const tempYear = parseInt(description.slice(referenceInd + 12, referenceInd + 16))
+            return isNaN(tempYear) ? null : tempYear
         })
 
         await browser.close()
@@ -87,12 +109,14 @@ async function scrapeFragranticaPerfumePage(url) {
                 url
             },
             brandChildren,
-            perfumerChildren,
-            [topNoteChildren, middleNoteChildren, baseNoteChildren]
+            // perfumerChildren,
+            noteChildren
         ]
     } catch (err) {
         console.error(err)
-        await browser.close()
+        if (typeof browser !== 'undefined') {
+            await browser.close()
+        }
     }
 }
 

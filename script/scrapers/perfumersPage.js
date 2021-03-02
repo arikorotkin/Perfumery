@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const {sleep} = require('../utils')
 
 const scrapeFragranticaPerfumePage = require('./perfumePage')
 
@@ -26,14 +27,23 @@ async function scrapeFragranticaPerfumerPage(url) {
 
         await browser.close()
 
-        const perfumes = perfumeUrls.map(perfumeUrl => scrapeFragranticaPerfumePage(perfumeUrl))
+        const perfumes = []
+
+        const scrapePerfumes = async () => {
+            for (let i = 0; i < perfumeUrls.length; i++) {
+                await sleep(1000)
+                const newPerfumeAndBrands = await scrapeFragranticaPerfumePage(perfumeUrls[i])
+                perfumes.push(newPerfumeAndBrands)
+            }
+        }
+        
+        await scrapePerfumes()
 
         return [{
             name: perfumerName,
             url
         }, perfumes]
     } catch (err) {
-        await browser.close()
         console.error(err)
     }
 }
@@ -52,14 +62,33 @@ async function scrapeFragranticaPerfumersPage() {
 
         await browser.close()
 
-        return perfumerPageUrls.map(url => scrapeFragranticaPerfumerPage(url))
+        console.log('scraping perfumers, perfumes, and brands...')
+
+        const scrapedPerfumersPerfumesAndBrands = []
+
+        const scrapePerfumers = async () => {
+            for (let i = 0; i < perfumerPageUrls.length; i++) {
+                await sleep(1750)
+                const newPerfumerPerfumesAndBrands = await scrapeFragranticaPerfumerPage(perfumerPageUrls[i])
+                scrapedPerfumersPerfumesAndBrands.push(newPerfumerPerfumesAndBrands)
+            }
+        }
+
+        await scrapePerfumers()
+
+        return scrapedPerfumersPerfumesAndBrands
     } catch (err) {
-        await browser.close()
         console.error(err)
+        if (typeof browser !== 'undefined') {
+            await browser.close()
+        }
     }
 }
 
-module.exports = scrapeFragranticaPerfumersPage
+module.exports = {
+    scrapeFragranticaPerfumersPage,
+    scrapeFragranticaPerfumerPage
+}
 
 // test url 1
 // scrapeFragranticaPerfumerPage('https://www.fragrantica.com/noses/Adriana_Medina-Baez.html')
