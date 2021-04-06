@@ -54,7 +54,6 @@ async function scrapeFragranticaNotePage(url) {
     }
 }
 
-// DON'T RUN YET
 async function scrapeFragranticaNotesPage() {
     try {
         const browser = await puppeteer.launch({ headless: true })
